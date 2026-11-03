@@ -6,7 +6,16 @@ package cli
 import (
 	"io"
 	"strings"
+
+	"tailscale.com/version"
 )
+
+func init() {
+	// thelo halo, not thelo funnel
+	i := infoMap[funnel]
+	i.Name = brandFunnelCommand
+	infoMap[funnel] = i
+}
 
 // Thelo branding (Qavats). This client is built from Tailscale's open-source
 // code and joins the Thelo network (a thelonet) run by Headscale.
@@ -23,7 +32,9 @@ const (
 	// brandNet is what upstream calls a tailnet.
 	brandNet = "thelonet"
 	// brandFunnel is what upstream calls Funnel (Tailscale Funnel).
-	brandFunnel = "Thelofunnel"
+	brandFunnel = "Halo"
+	// brandFunnelCommand is the subcommand upstream calls funnel.
+	brandFunnelCommand = "halo"
 	// brandCredit names the upstream project, as its BSD-3-Clause licence asks.
 	brandCredit = "Built on Tailscale (https://github.com/tailscale/tailscale), BSD-3-Clause."
 )
@@ -55,6 +66,11 @@ func brandCommands(s string) string {
 		b.WriteString(s[:i])
 		if i == 0 || strings.ContainsRune(" \t\n'\"`(", rune(s[i-1])) {
 			b.WriteString(brandCommand + " ")
+			if rest := s[i+len(ref):]; strings.HasPrefix(rest, "funnel") && isProductMention("", rest[len("funnel"):]) {
+				b.WriteString(brandFunnelCommand)
+				s = rest[len("funnel"):]
+				continue
+			}
 		} else {
 			b.WriteString(ref)
 		}
@@ -84,7 +100,7 @@ func (e *brandedError) Unwrap() error { return e.err }
 
 // brandProse replaces the product's words in running text: "Tailscale" with
 // [brandShort], "tailnet" with [brandNet] (capitalised and plural too), and
-// "Funnel" or "Tailscale Funnel" with [brandFunnel]. It leaves alone the
+// "Funnel" or "Tailscale Funnel" with [brandFunnel] ("serve/funnel" too). It leaves alone the
 // words inside identifiers, paths and hostnames ("TailscaleIPs",
 // "Tailscale.app", "tailscale.com", "CurrentTailnet", "ts-tailnet.ts.net"),
 // the upstream credit ("Built on Tailscale") and the company ("Tailscale Inc").
@@ -92,6 +108,7 @@ func brandProse(s string) string {
 	s = replaceWord(s, "Tailscale Funnel", brandFunnel)
 	s = replaceWord(s, "Tailscale", brandShort)
 	s = replaceWord(s, "Funnel", brandFunnel)
+	s = replaceWord(s, "serve/funnel", "serve/"+brandFunnelCommand)
 	s = replaceWord(s, "tailnet", brandNet)
 	return replaceWord(s, "Tailnet", strings.ToUpper(brandNet[:1])+brandNet[1:])
 }
@@ -175,3 +192,51 @@ func unbranded(w io.Writer) io.Writer {
 	}
 	return w
 }
+
+// brandLicenses is what `thelo licenses` prints: where the code comes from,
+// upstream's licence in full (BSD-3-Clause asks binary redistributions to
+// reproduce it), and where the dependencies' licences are listed.
+func brandLicenses() string {
+	tag := "v" + version.Short()
+	return brandProduct + ` is built from Tailscale's open-source client,
+https://github.com/tailscale/tailscale (release ` + tag + `), and is
+distributed under the same licence, reproduced below. Tailscale Inc. also
+grants a patent licence for its code:
+https://github.com/tailscale/tailscale/blob/` + tag + `/PATENTS
+
+The open-source packages it is built with, and their licences, are listed at
+https://github.com/tailscale/tailscale/blob/` + tag + `/licenses/tailscale.md
+
+` + upstreamLicense
+}
+
+// upstreamLicense is Tailscale's LICENSE file, unchanged.
+const upstreamLicense = `BSD 3-Clause License
+
+Copyright (c) 2020 Tailscale Inc & contributors.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+`
