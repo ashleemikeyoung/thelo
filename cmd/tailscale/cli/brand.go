@@ -8,25 +8,29 @@ import (
 	"strings"
 )
 
-// ElRoi Pneuma branding (Qavats). This client is built from Tailscale's
-// open-source code and joins the ElRoi Pneuma tailnet run by Headscale.
+// Thelo branding (Qavats). This client is built from Tailscale's open-source
+// code and joins the Thelo network (a thelonet) run by Headscale.
 // Only what people read is renamed: the command name, help and messages.
 // Protocols, file paths, the daemon's service label and API names keep
 // their upstream names so that upstream releases merge cleanly.
 const (
 	// brandProduct is the product name shown to people.
-	brandProduct = "ElRoi Pneuma"
-	// brandShort is the product name in running text ("Pneuma is starting").
-	brandShort = "Pneuma"
+	brandProduct = "Thelo"
+	// brandShort is the product name in running text ("Thelo is starting").
+	brandShort = "Thelo"
 	// brandCommand is the name of this CLI.
-	brandCommand = "pneuma"
+	brandCommand = "thelo"
+	// brandNet is what upstream calls a tailnet.
+	brandNet = "thelonet"
+	// brandFunnel is what upstream calls Funnel (Tailscale Funnel).
+	brandFunnel = "Thelofunnel"
 	// brandCredit names the upstream project, as its BSD-3-Clause licence asks.
 	brandCredit = "Built on Tailscale (https://github.com/tailscale/tailscale), BSD-3-Clause."
 )
 
 // brandText rewrites what people read: command references, so that
-// `tailscale up` reads `pneuma up`, and the product name, so that
-// "Tailscale is starting" reads "Pneuma is starting" (see [brandProse]). A reference is "tailscale " at the start
+// `tailscale up` reads `thelo up`, and the product's words, so that
+// "Tailscale is starting" reads "Thelo is starting" (see [brandProse]). A reference is "tailscale " at the start
 // of the text or after whitespace, a quote, a backtick or "(". That leaves
 // alone "Tailscale" (the company or protocol), "tailscaled", and hostnames
 // such as "pkgs.tailscale.com". (No regexp: tailscaled's dependency test
@@ -78,12 +82,23 @@ type brandedError struct {
 func (e *brandedError) Error() string { return e.msg }
 func (e *brandedError) Unwrap() error { return e.err }
 
-// brandProse replaces the product name "Tailscale" with [brandShort] in
-// running text. It leaves alone the name inside identifiers and paths
-// ("TailscaleIPs", "Tailscale.app", "tailscale.com"), the upstream credit
-// ("Built on Tailscale") and the company ("Tailscale Inc").
+// brandProse replaces the product's words in running text: "Tailscale" with
+// [brandShort], "tailnet" with [brandNet] (capitalised and plural too), and
+// "Funnel" or "Tailscale Funnel" with [brandFunnel]. It leaves alone the
+// words inside identifiers, paths and hostnames ("TailscaleIPs",
+// "Tailscale.app", "tailscale.com", "CurrentTailnet", "ts-tailnet.ts.net"),
+// the upstream credit ("Built on Tailscale") and the company ("Tailscale Inc").
 func brandProse(s string) string {
-	const name = "Tailscale"
+	s = replaceWord(s, "Tailscale Funnel", brandFunnel)
+	s = replaceWord(s, "Tailscale", brandShort)
+	s = replaceWord(s, "Funnel", brandFunnel)
+	s = replaceWord(s, "tailnet", brandNet)
+	return replaceWord(s, "Tailnet", strings.ToUpper(brandNet[:1])+brandNet[1:])
+}
+
+// replaceWord replaces name with repl where [isProductMention] says it is
+// the word on its own (a plural "s" may follow).
+func replaceWord(s, name, repl string) string {
 	if !strings.Contains(s, name) {
 		return s
 	}
@@ -96,8 +111,8 @@ func brandProse(s string) string {
 		}
 		before, after := b.String()+s[:i], s[i+len(name):]
 		b.WriteString(s[:i])
-		if isProductMention(before, after) {
-			b.WriteString(brandShort)
+		if isProductMention(before, after) || strings.HasPrefix(after, "s") && isProductMention(before, after[1:]) {
+			b.WriteString(repl)
 		} else {
 			b.WriteString(name)
 		}
