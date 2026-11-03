@@ -30,7 +30,7 @@ func statePath() string {
 	case "freebsd", "openbsd":
 		return "/var/db/tailscale/tailscaled.state"
 	case "darwin":
-		return "/Library/Tailscale/tailscaled.state"
+		return "/Library/Thelo/thelod.state" // Thelo: thelod, not tailscaled
 	case "aix":
 		return "/var/tailscale/tailscaled.state"
 	default:

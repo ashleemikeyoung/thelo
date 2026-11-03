@@ -36,7 +36,7 @@ func listen(path string) (net.Listener, error) {
 	if err == nil {
 		c.Close()
 		if tailscaledRunningUnderLaunchd() {
-			return nil, fmt.Errorf("%v: address already in use; tailscaled already running under launchd (to stop, run: $ sudo launchctl stop com.tailscale.tailscaled)", path)
+			return nil, fmt.Errorf("%v: address already in use; thelod already running under launchd (to stop, run: $ sudo launchctl stop com.qavats.thelod)", path)
 		}
 		return nil, fmt.Errorf("%v: address already in use", path)
 	}
@@ -74,7 +74,7 @@ func tailscaledRunningUnderLaunchd() bool {
 	if runtime.GOOS != "darwin" {
 		return false
 	}
-	plist, err := exec.Command("launchctl", "list", "com.tailscale.tailscaled").Output()
+	plist, err := exec.Command("launchctl", "list", "com.qavats.thelod").Output()
 	_ = plist // parse it? https://github.com/DHowett/go-plist if we need something.
 	running := err == nil
 	return running

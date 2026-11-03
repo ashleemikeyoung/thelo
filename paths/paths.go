@@ -57,7 +57,7 @@ func DefaultTailscaledSocket() string {
 		return WindowsProtectedPipePrefix + `Tailscale\tailscaled`
 	}
 	if runtime.GOOS == "darwin" {
-		return "/var/run/tailscaled.socket"
+		return "/var/run/thelod.socket" // Thelo: thelod, not tailscaled
 	}
 	if runtime.GOOS == "plan9" {
 		return "/srv/tailscaled.sock"
@@ -83,7 +83,7 @@ func DefaultTailscaledSocket() string {
 		return "/tmp/tailscale/tailscaled.sock"
 	}
 	if fi, err := os.Stat("/var/run"); err == nil && fi.IsDir() {
-		return "/var/run/tailscale/tailscaled.sock"
+		return "/var/run/thelo/thelod.sock" // Thelo: thelod, not tailscaled
 	}
 	return "tailscaled.sock"
 }
