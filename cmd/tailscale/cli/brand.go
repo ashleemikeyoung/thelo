@@ -17,7 +17,7 @@ func init() {
 	infoMap[funnel] = i
 }
 
-// Thelo branding (Qavats). This client is built from Tailscale's open-source
+// Thelo branding (Qavats Ranch). This client is built from Tailscale's open-source
 // code and joins the Thelo network (a thelonet) run by Headscale.
 // Only what people read is renamed: the command name, help and messages.
 // Protocols, file paths, the daemon's service label and API names keep
@@ -37,6 +37,8 @@ const (
 	brandFunnelCommand = "halo"
 	// brandCredit names the upstream project, as its BSD-3-Clause licence asks.
 	brandCredit = "Built on Tailscale (https://github.com/tailscale/tailscale), BSD-3-Clause."
+	// brandCompany is the company that ships Thelo.
+	brandCompany = "Qavats Ranch"
 )
 
 // brandText rewrites what people read: command references, so that
