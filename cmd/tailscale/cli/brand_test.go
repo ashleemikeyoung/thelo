@@ -12,24 +12,38 @@ import (
 
 func TestBrandText(t *testing.T) {
 	tests := []struct{ in, want string }{
-		{"tailscale up [flags]", "pneuma up [flags]"},
-		{`see "tailscale set --help" for valid settings`, `see "pneuma set --help" for valid settings`},
-		{"use `tailscale set --exit-node=`", "use `pneuma set --exit-node=`"},
-		{"Use 'sudo tailscale up'.", "Use 'sudo pneuma up'."},
-		{"(tailscale status)", "(pneuma status)"},
+		{"tailscale up [flags]", "thelo up [flags]"},
+		{`see "tailscale set --help" for valid settings`, `see "thelo set --help" for valid settings`},
+		{"use `tailscale set --exit-node=`", "use `thelo set --exit-node=`"},
+		{"Use 'sudo tailscale up'.", "Use 'sudo thelo up'."},
+		{"(tailscale status)", "(thelo status)"},
 		// the product name in running text
-		{"Tailscale is starting. Please wait.", "Pneuma is starting. Please wait."},
-		{"Tailscale is stopped.", "Pneuma is stopped."},
-		{"Tailscale SSH", "Pneuma SSH"},
-		{"Tailscale DNS: enabled.", "Pneuma DNS: enabled."},
-		{"could not reach the Tailscale coordination server", "could not reach the Pneuma coordination server"},
-		{"Connect to Tailscale, logging in if needed", "Connect to Pneuma, logging in if needed"},
-		{"Run 'tailscale up' to start Tailscale.", "Run 'pneuma up' to start Pneuma."},
+		{"Tailscale is starting. Please wait.", "Thelo is starting. Please wait."},
+		{"Tailscale is stopped.", "Thelo is stopped."},
+		{"Tailscale SSH", "Thelo SSH"},
+		{"Tailscale DNS: enabled.", "Thelo DNS: enabled."},
+		{"could not reach the Tailscale coordination server", "could not reach the Thelo coordination server"},
+		{"Connect to Tailscale, logging in if needed", "Connect to Thelo, logging in if needed"},
+		{"Run 'tailscale up' to start Tailscale.", "Run 'thelo up' to start Thelo."},
+		// tailnet and Funnel
+		{"Share a directory with your tailnet", "Share a directory with your thelonet"},
+		{"Tailnet Lock is ENABLED.", "Thelonet Lock is ENABLED."},
+		{"MagicDNS: enabled tailnet-wide (suffix = x)", "MagicDNS: enabled thelonet-wide (suffix = x)"},
+		{"switch between tailnets", "switch between thelonets"},
+		{"Turn on/off Funnel service", "Turn on/off Thelofunnel service"},
+		{"Tailscale Funnel is not enabled", "Thelofunnel is not enabled"},
+		{"# Funnel on:", "# Thelofunnel on:"},
+		{"Show current serve/funnel status", "Show current serve/funnel status"},
+		{"tailscale funnel status", "thelo funnel status"},
 		// left alone: identifiers, paths, URLs, the daemon, the credit and the company
 		{"tailscaled --state=x", "tailscaled --state=x"},
 		{"https://pkgs.tailscale.com/stable", "https://pkgs.tailscale.com/stable"},
 		{"tailscale.com/cmd/tailscale", "tailscale.com/cmd/tailscale"},
 		{"TailscaleIPs", "TailscaleIPs"},
+		{"CurrentTailnet", "CurrentTailnet"},
+		{"web.ts-tailnet.ts.net", "web.ts-tailnet.ts.net"},
+		{"tailnet.ts.net", "tailnet.ts.net"},
+		{"AllowFunnel", "AllowFunnel"},
 		{"/Applications/Tailscale.app", "/Applications/Tailscale.app"},
 		{brandCredit, brandCredit},
 		{"Copyright (c) Tailscale Inc & contributors", "Copyright (c) Tailscale Inc & contributors"},
@@ -44,7 +58,7 @@ func TestBrandText(t *testing.T) {
 func TestBrandErrKeepsTheChain(t *testing.T) {
 	base := errors.New("final argument to 'tailscale file cp' must end in colon")
 	err := brandErr(base)
-	if !strings.Contains(err.Error(), "'pneuma file cp'") {
+	if !strings.Contains(err.Error(), "'thelo file cp'") {
 		t.Errorf("message not branded: %q", err)
 	}
 	if !errors.Is(err, base) {
@@ -61,14 +75,14 @@ func TestBrandErrKeepsTheChain(t *testing.T) {
 func TestRootHelpIsBranded(t *testing.T) {
 	root := newRootCmd()
 	help := usageFunc(root)
-	for _, want := range []string{"pneuma [flags] <subcommand>", brandProduct, brandCredit} {
+	for _, want := range []string{"thelo [flags] <subcommand>", brandProduct, brandCredit} {
 		if !strings.Contains(help, want) {
 			t.Errorf("root help missing %q:\n%s", want, help)
 		}
 	}
 	for _, sub := range root.Subcommands {
 		if sub.Name == "up" {
-			if h := usageFunc(sub); !strings.Contains(h, "pneuma up [flags]") || strings.Contains(h, "tailscale up") {
+			if h := usageFunc(sub); !strings.Contains(h, "thelo up [flags]") || strings.Contains(h, "tailscale up") {
 				t.Errorf("up help not branded:\n%s", h)
 			}
 		}
@@ -87,7 +101,7 @@ func TestBrandWriter(t *testing.T) {
 	fmt.Fprintln(w, "Tailscale is starting. Please wait.")
 	fmt.Fprintln(w, `{"Health": ["Tailscale is starting. Please wait."]}`)
 	got := buf.String()
-	want := "Pneuma is starting. Please wait.\n" + `{"Health": ["Tailscale is starting. Please wait."]}` + "\n"
+	want := "Thelo is starting. Please wait.\n" + `{"Health": ["Tailscale is starting. Please wait."]}` + "\n"
 	if got != want {
 		t.Errorf("got %q, want %q (JSON passes through unchanged)", got, want)
 	}
