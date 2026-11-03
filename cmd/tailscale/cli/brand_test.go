@@ -30,11 +30,13 @@ func TestBrandText(t *testing.T) {
 		{"Tailnet Lock is ENABLED.", "Thelonet Lock is ENABLED."},
 		{"MagicDNS: enabled tailnet-wide (suffix = x)", "MagicDNS: enabled thelonet-wide (suffix = x)"},
 		{"switch between tailnets", "switch between thelonets"},
-		{"Turn on/off Funnel service", "Turn on/off Thelofunnel service"},
-		{"Tailscale Funnel is not enabled", "Thelofunnel is not enabled"},
-		{"# Funnel on:", "# Thelofunnel on:"},
-		{"Show current serve/funnel status", "Show current serve/funnel status"},
-		{"tailscale funnel status", "thelo funnel status"},
+		{"Turn on/off Funnel service", "Turn on/off Halo service"},
+		{"Tailscale Funnel is not enabled", "Halo is not enabled"},
+		{"# Funnel on:", "# Halo on:"},
+		{"Show current serve/funnel status", "Show current serve/halo status"},
+		{"tailscale funnel status", "thelo halo status"},
+		{"use `tailscale funnel`", "use `thelo halo`"},
+		{"tailscale funnelx", "thelo funnelx"},
 		// left alone: identifiers, paths, URLs, the daemon, the credit and the company
 		{"tailscaled --state=x", "tailscaled --state=x"},
 		{"https://pkgs.tailscale.com/stable", "https://pkgs.tailscale.com/stable"},
@@ -104,5 +106,25 @@ func TestBrandWriter(t *testing.T) {
 	want := "Thelo is starting. Please wait.\n" + `{"Health": ["Tailscale is starting. Please wait."]}` + "\n"
 	if got != want {
 		t.Errorf("got %q, want %q (JSON passes through unchanged)", got, want)
+	}
+}
+
+func TestHaloCommand(t *testing.T) {
+	var names []string
+	for _, sub := range newRootCmd().Subcommands {
+		names = append(names, sub.Name)
+	}
+	got := strings.Join(names, " ")
+	if !strings.Contains(" "+got+" ", " halo ") || strings.Contains(" "+got+" ", " funnel ") {
+		t.Errorf("want a halo subcommand and no funnel: %s", got)
+	}
+}
+
+func TestLicensesReproducesUpstream(t *testing.T) {
+	l := brandLicenses()
+	for _, want := range []string{"Copyright (c) 2020 Tailscale Inc & contributors.", "THIS SOFTWARE IS PROVIDED", "/licenses/tailscale.md", "/PATENTS"} {
+		if !strings.Contains(l, want) {
+			t.Errorf("licenses missing %q", want)
+		}
 	}
 }

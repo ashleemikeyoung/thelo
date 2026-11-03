@@ -6,8 +6,9 @@ package cli
 import (
 	"context"
 
+	"fmt"
+
 	"github.com/peterbourgon/ff/v3/ffcli"
-	"tailscale.com/licenses"
 )
 
 var licensesCmd = &ffcli.Command{
@@ -19,12 +20,8 @@ var licensesCmd = &ffcli.Command{
 }
 
 func runLicenses(ctx context.Context, args []string) error {
-	url := licenses.LicensesURL()
-	outln(`
-Tailscale wouldn't be possible without the contributions of thousands of open
-source developers. To see the open source packages included in Tailscale and
-their respective license information, visit:
-
-    ` + url)
+	// upstream points at tailscale.com/licenses/<platform>, the lists for
+	// its own apps (licenses.LicensesURL); this client prints its own
+	fmt.Fprint(unbranded(Stdout), brandLicenses())
 	return nil
 }

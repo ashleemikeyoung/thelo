@@ -1500,8 +1500,8 @@ func TestMessageForPort(t *testing.T) {
 				"https://foo.test.ts.net/",
 				"|-- proxy http://127.0.0.1:3000",
 				"",
-				fmt.Sprintf(msgRunningInBackground, "Funnel"),
-				fmt.Sprintf(msgDisableProxy, "funnel", "https", 443),
+				fmt.Sprintf(msgRunningInBackground, "Halo"),
+				fmt.Sprintf(msgDisableProxy, brandFunnelCommand, "https", 443),
 			}, "\n"),
 		},
 		{
