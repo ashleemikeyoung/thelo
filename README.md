@@ -4,7 +4,7 @@ Thelo is the private network client of Qavats Ranch, LLC: **`thelod`**, the node
 agent, and **`thelo`**, its command line. Devices running it form a **thelonet**, a private WireGuard®
 network run by the [Thelo Controller](https://github.com/ashleemikeyoung/thelo-controller).
 
-This repository is a fork of [Tailscale](https://github.com/tailscale/tailscale). It is not
+Thelo is built on [Tailscale](https://github.com/tailscale/tailscale) and follows its stable releases. It is not
 affiliated with or endorsed by Tailscale Inc.; "Tailscale" is their trademark. Tailscale's own
 README is kept as [README.upstream.md](README.upstream.md).
 
