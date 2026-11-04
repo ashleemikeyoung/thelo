@@ -1,87 +1,57 @@
-# Tailscale
+# Thelo
 
-https://tailscale.com
+Thelo is the private network client of Qavats Ranch, LLC: **`thelod`**, the node
+agent, and **`thelo`**, its command line. Devices running it form a **thelonet**, a private WireGuard®
+network run by the [Thelo Controller](https://github.com/ashleemikeyoung/headscale).
 
-Private WireGuard® networks made easy
+This repository is a fork of [Tailscale](https://github.com/tailscale/tailscale). It is not
+affiliated with or endorsed by Tailscale Inc.; "Tailscale" is their trademark. Tailscale's own
+README is kept as [README.upstream.md](README.upstream.md).
 
-## Overview
+## Branches
 
-This repository contains the majority of Tailscale's open source code.
-Notably, it includes the `tailscaled` daemon and
-the `tailscale` CLI tool. The `tailscaled` daemon runs on Linux, Windows,
-[macOS](https://tailscale.com/kb/1065/macos-variants/), and to varying degrees
-on FreeBSD and OpenBSD. The Tailscale iOS and Android apps use this repo's
-code, but this repo doesn't contain the mobile GUI code.
+| Branch | What it is |
+|---|---|
+| `thelo` (default) | a Tailscale stable release with our commits on top (currently v1.104.5) |
+| `main` | a plain mirror of upstream `main`, used to pick up security fixes |
 
-Other [Tailscale repos](https://github.com/orgs/tailscale/repositories) of note:
+## What is different from Tailscale
 
-* the Android app is at https://github.com/tailscale/tailscale-android
-* the Synology package is at https://github.com/tailscale/tailscale-synology
-* the QNAP package is at https://github.com/tailscale/tailscale-qpkg
-* the Chocolatey packaging is at https://github.com/tailscale/tailscale-chocolatey
+- **The names people read:** the CLI is `thelo` and the daemon `thelod`; a tailnet is a thelonet;
+  Funnel is **Halo** (`thelo halo`); `thelo version` names Thelo and Qavats Ranch; `thelo licenses`
+  prints Tailscale's licence in full. The brand layer is `cmd/tailscale/cli/brand.go`.
+- **Its own daemon identity:** socket, state directory, systemd unit and macOS launchd label
+  (`com.qavats.thelod`) are Thelo's, so it never clashes with a Tailscale install.
+- **Unchanged, on purpose:** the protocol, the state format, the `tailscale0` interface, Go package
+  paths and `--json` output. Nodes keep their identity when they move from tailscaled, and the
+  stock Tailscale apps can still join a Thelo Controller.
 
-For background on which parts of Tailscale are open source and why,
-see [https://tailscale.com/opensource/](https://tailscale.com/opensource/).
-
-## Using
-
-We serve packages for a variety of distros and platforms at
-[https://pkgs.tailscale.com](https://pkgs.tailscale.com/).
-
-## Other clients
-
-The [macOS, iOS, and Windows clients](https://tailscale.com/download)
-use the code in this repository but additionally include small GUI
-wrappers. The GUI wrappers on non-open source platforms are themselves
-not open source.
+We deploy `thelod` with `--no-logs-no-support`, so nothing is uploaded to Tailscale's servers.
 
 ## Building
 
-We always require the latest Go release, currently Go 1.27. (While we build
-releases with our [Go fork](https://github.com/tailscale/go/), its use is not
-required.)
-
 ```
-go install tailscale.com/cmd/tailscale{,d}
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 ./build_dist.sh --strip -o thelod ./cmd/tailscaled
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 ./build_dist.sh --strip -o thelo ./cmd/tailscale
 ```
 
-If you're packaging Tailscale for distribution, use `build_dist.sh`
-instead, to burn commit IDs and version info into the binaries:
+macOS works the same with `GOOS=darwin GOARCH=arm64`.
 
-```
-./build_dist.sh tailscale.com/cmd/tailscale
-./build_dist.sh tailscale.com/cmd/tailscaled
-```
+## Following upstream
 
-If your distro has conventions that preclude the use of
-`build_dist.sh`, please do the equivalent of what it does in your
-distro's way, so that bug reports contain useful version information.
+Our commits are kept small so they rebase onto each new stable release:
+`git rebase --onto vX.Y.Z <previous tag> thelo`. They touch `cmd/tailscale/cli`,
+`cmd/tailscaled/install_darwin.go`, `paths`, `safesocket`, `license_test.go` and the licence
+and README files.
 
-## Bugs
+## Ownership and licence
 
-Please file any issues about this code or the hosted service on
-[the issue tracker](https://github.com/tailscale/tailscale/issues).
+Thelo is the work and property of Qavats Ranch, LLC. Copyright © 2026 Qavats Ranch, LLC.
 
-## Contributing
-
-PRs welcome! But please file bugs. Commit messages should [reference
-bugs](https://docs.github.com/en/github/writing-on-github/autolinked-references-and-urls).
-
-We require [Developer Certificate of
-Origin](https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin)
-`Signed-off-by` lines in commits.
-
-See [commit-messages.md](docs/commit-messages.md) (or skim `git log`) for our commit message style.
-
-## About Us
-
-[Tailscale](https://tailscale.com/) is primarily developed by the
-people at https://github.com/orgs/tailscale/people. For other contributors,
-see:
-
-* https://github.com/tailscale/tailscale/graphs/contributors
-* https://github.com/tailscale/tailscale-android/graphs/contributors
-
-## Legal
+It is free software under the **GNU Affero General Public License, version 3 or later**
+([LICENSE](LICENSE)). Code that comes from Tailscale keeps its BSD 3-Clause licence
+([LICENSE-BSD-3-Clause](LICENSE-BSD-3-Clause)) and Tailscale's patent grant ([PATENTS](PATENTS));
+[NOTICE](NOTICE) explains which covers what. The names and marks Thelo, Qavats and ElRoi
+belong to Qavats Ranch, LLC and are not covered by the licence.
 
 WireGuard is a registered trademark of Jason A. Donenfeld.

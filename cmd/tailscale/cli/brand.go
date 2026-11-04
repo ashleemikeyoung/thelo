@@ -1,5 +1,5 @@
-// Copyright (c) Tailscale Inc & contributors
-// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (C) 2026 Qavats Ranch, LLC
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 package cli
 
@@ -35,10 +35,15 @@ const (
 	brandFunnel = "Halo"
 	// brandFunnelCommand is the subcommand upstream calls funnel.
 	brandFunnelCommand = "halo"
-	// brandCredit names the upstream project, as its BSD-3-Clause licence asks.
-	brandCredit = "Built on Tailscale (https://github.com/tailscale/tailscale), BSD-3-Clause."
+	// brandCredit gives Thelo's licence and names the upstream project, as its
+	// BSD-3-Clause licence asks.
+	brandCredit = "Free software, AGPL-3.0-or-later. Built on Tailscale (https://github.com/tailscale/tailscale), BSD-3-Clause."
 	// brandCompany is the company that ships Thelo.
 	brandCompany = "Qavats Ranch"
+	// brandOwner holds the copyright in Thelo.
+	brandOwner = "Qavats Ranch, LLC"
+	// brandSource is where Thelo's source is published (AGPL).
+	brandSource = "https://github.com/ashleemikeyoung/tailscale"
 )
 
 // brandText rewrites what people read: command references, so that
@@ -200,10 +205,19 @@ func unbranded(w io.Writer) io.Writer {
 // reproduce it), and where the dependencies' licences are listed.
 func brandLicenses() string {
 	tag := "v" + version.Short()
-	return brandProduct + ` is built from Tailscale's open-source client,
-https://github.com/tailscale/tailscale (release ` + tag + `), and is
-distributed under the same licence, reproduced below. Tailscale Inc. also
-grants a patent licence for its code:
+	src := brandSource + "/tree/thelo"
+	if c := strings.TrimSuffix(version.GetMeta().GitCommit, "-dirty"); c != "" {
+		src = brandSource + "/tree/" + c
+	}
+	return brandProduct + ` is Copyright (C) 2026 ` + brandOwner + `. It is free software,
+licensed under the GNU Affero General Public License, version 3 or (at your
+option) any later version: https://www.gnu.org/licenses/agpl-3.0.html
+The source of this version: ` + src + `
+
+It is built from Tailscale's open-source client,
+https://github.com/tailscale/tailscale (release ` + tag + `), whose code keeps its
+own licence, reproduced below. Tailscale Inc. also grants a patent licence for
+its code:
 https://github.com/tailscale/tailscale/blob/` + tag + `/PATENTS
 
 The open-source packages it is built with, and their licences, are listed at

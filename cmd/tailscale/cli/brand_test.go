@@ -1,5 +1,5 @@
-// Copyright (c) Tailscale Inc & contributors
-// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (C) 2026 Qavats Ranch, LLC
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 package cli
 
@@ -122,7 +122,7 @@ func TestHaloCommand(t *testing.T) {
 
 func TestLicensesReproducesUpstream(t *testing.T) {
 	l := brandLicenses()
-	for _, want := range []string{"Copyright (c) 2020 Tailscale Inc & contributors.", "THIS SOFTWARE IS PROVIDED", "/licenses/tailscale.md", "/PATENTS"} {
+	for _, want := range []string{"Copyright (C) 2026 Qavats Ranch, LLC", "GNU Affero General Public License, version 3", brandSource + "/tree/", "Copyright (c) 2020 Tailscale Inc & contributors.", "THIS SOFTWARE IS PROVIDED", "/licenses/tailscale.md", "/PATENTS"} {
 		if !strings.Contains(l, want) {
 			t.Errorf("licenses missing %q", want)
 		}

@@ -39,12 +39,14 @@ func normalizeLineEndings(b []byte) []byte {
 }
 
 // TestLicenseHeaders checks that all Go files in the tree
-// directory tree have a correct-looking Tailscale license header.
+// directory tree have a correct-looking Tailscale license header, or Thelo's
+// (files Qavats Ranch, LLC wrote for Thelo, under AGPL-3.0-or-later).
 func TestLicenseHeaders(t *testing.T) {
 	want := normalizeLineEndings([]byte(strings.TrimLeft(`
 // Copyright (c) Tailscale Inc & contributors
 // SPDX-License-Identifier: BSD-3-Clause
 `, "\n")))
+	thelo := []byte("// Copyright (C) 2026 Qavats Ranch, LLC\n// SPDX-License-Identifier: AGPL-3.0-or-later\n")
 
 	exceptions := set.Of(
 		// Subprocess test harness code
@@ -124,7 +126,7 @@ func TestLicenseHeaders(t *testing.T) {
 			buf = buf[:i]
 		}
 
-		if bytes.Contains(buf, want) {
+		if bytes.Contains(buf, want) || bytes.Contains(buf, thelo) {
 			return nil
 		}
 

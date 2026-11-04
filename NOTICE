@@ -1,0 +1,29 @@
+Thelo
+Copyright (C) 2026 Qavats Ranch, LLC
+
+Thelo is free software: you can redistribute it and/or modify it under the
+terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version (see LICENSE). It is distributed WITHOUT ANY WARRANTY.
+
+Thelo is derived from Tailscale (https://github.com/tailscale/tailscale).
+
+  Tailscale
+  Copyright (c) 2020 Tailscale Inc & contributors.
+  Licensed under the BSD 3-Clause License (see LICENSE-BSD-3-Clause).
+  Tailscale Inc. also grants a patent licence for its code (see PATENTS).
+
+Files that originate from Tailscale keep their original copyright and BSD
+3-Clause notices; changes made to them for Thelo are recorded in the Git
+history of this repository. Files written for Thelo carry the notice
+"Copyright (C) 2026 Qavats Ranch, LLC" and "SPDX-License-Identifier:
+AGPL-3.0-or-later". The work as a whole is distributed under the GNU Affero
+General Public License, version 3 or later.
+
+The names and marks Thelo, Qavats and ElRoi belong to Qavats Ranch, LLC and
+are not licensed under the AGPL. "Tailscale" is a trademark of
+Tailscale Inc.; Thelo is not affiliated with, endorsed by, or sponsored by
+Tailscale Inc. WireGuard is a registered trademark of Jason A. Donenfeld.
+
+Thelo bundles third-party Go packages under their own licences, listed in
+licenses/tailscale.md.
