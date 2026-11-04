@@ -43,7 +43,7 @@ const (
 	// brandOwner holds the copyright in Thelo.
 	brandOwner = "Qavats Ranch, LLC"
 	// brandSource is where Thelo's source is published (AGPL).
-	brandSource = "https://github.com/ashleemikeyoung/tailscale"
+	brandSource = "https://github.com/ashleemikeyoung/thelo"
 )
 
 // brandText rewrites what people read: command references, so that
